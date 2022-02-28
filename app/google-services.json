@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1043284871506",
+    "project_id": "mediarecorder-e97ca",
+    "storage_bucket": "mediarecorder-e97ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043284871506:android:3dcc695b9dbf8d1cca128b",
+        "android_client_info": {
+          "package_name": "lv.kristaps.mediarecorder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1043284871506-c8uq92fm3981fmtk1gephov2uo16lc4r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCYjTVwq_sIOBun9kCewqZAatYePxe2qM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1043284871506-c8uq92fm3981fmtk1gephov2uo16lc4r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
