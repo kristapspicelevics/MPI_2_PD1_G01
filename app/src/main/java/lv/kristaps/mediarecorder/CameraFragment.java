@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ public class CameraFragment extends Fragment {
     String mCurrentPhotoPath;
     ViewPager viewPager;
     ArrayList<Bitmap> bitMapList;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public CameraFragment() {
         // Required empty public constructor
@@ -93,7 +96,7 @@ public class CameraFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View cameraView = inflater.inflate(R.layout.fragment_camera, container, false);
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
         Button button = cameraView.findViewById(R.id.takePic);
         mImageView = (ImageView) cameraView.findViewById(R.id.thumbnail);
         viewPager = (ViewPager) cameraView.findViewById(R.id.viewPagerMain);
@@ -101,7 +104,10 @@ public class CameraFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "camera fragment");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "photo taken");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 // Ensure that there's a camera activity to handle the intent
                 if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
 

@@ -26,6 +26,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
@@ -41,6 +43,7 @@ public class AudioFragment extends Fragment {
     MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
     ArrayList<String> mAudioList = new ArrayList<>();
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -96,7 +99,7 @@ public class AudioFragment extends Fragment {
         Button stop = audioView.findViewById(R.id.stopRecord);
         ListView mAudioListView = audioView.findViewById(R.id.audioListView);
 
-
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
 
         //detail of each audio
         String[] mAudioDetailArray = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME};
@@ -106,8 +109,8 @@ public class AudioFragment extends Fragment {
         ContextWrapper contextWrapper = new ContextWrapper(getActivity().getApplicationContext());
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         try {
-            Cursor mAudioCursor = getActivity().getContentResolver().query(Uri.fromFile(musicDirectory), mAudioDetailArray, null, null, null);
-        //    Cursor mAudioCursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, mAudioDetailArray, null, null, null);
+        //    Cursor mAudioCursor = getActivity().getContentResolver().query(Uri.fromFile(musicDirectory), mAudioDetailArray, null, null, null);
+            Cursor mAudioCursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, mAudioDetailArray, null, null, null);
             if(mAudioCursor != null){
                 if(mAudioCursor.moveToFirst()){
                     do{
@@ -139,7 +142,9 @@ public class AudioFragment extends Fragment {
                     mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
                     mediaRecorder.prepare();
                     mediaRecorder.start();
-
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "audio fragment");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "recording started");
                     Toast.makeText(getActivity(), "Recording starting", Toast.LENGTH_LONG).show();
                 }
                 catch (Exception e){
@@ -154,6 +159,9 @@ public class AudioFragment extends Fragment {
                     mediaRecorder.stop();
                     mediaRecorder.release();
                     mediaRecorder = null;
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "audio fragment");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "recording stopped");
                     Toast.makeText(getActivity(), "End of recording", Toast.LENGTH_LONG).show();
                 }
                 catch (Exception e){
@@ -171,6 +179,9 @@ public class AudioFragment extends Fragment {
                     mediaPlayer.setDataSource(pathToFile);
                     mediaPlayer.prepare();
                     mediaPlayer.start();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "audio fragment");
+                    bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "recording played");
                 }
                 catch (Exception e){
                     e.printStackTrace();
