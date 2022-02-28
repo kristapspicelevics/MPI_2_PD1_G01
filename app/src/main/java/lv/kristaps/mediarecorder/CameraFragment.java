@@ -6,12 +6,14 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,8 +25,10 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +49,11 @@ public class CameraFragment extends Fragment {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     ImageView mImageView;
     String mCurrentPhotoPath;
+    ViewPager viewPager;
+    ArrayList<Bitmap> bitMapList;
+    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    public String photoFileName = "photo.jpg";
+    public final String APP_TAG = "MyCustomApp";
 
     public CameraFragment() {
         // Required empty public constructor
@@ -90,6 +99,8 @@ public class CameraFragment extends Fragment {
 
         Button button = cameraView.findViewById(R.id.takePic);
         mImageView = (ImageView) cameraView.findViewById(R.id.thumbnail);
+        viewPager = (ViewPager) cameraView.findViewById(R.id.viewPagerMain);
+        bitMapList = new ArrayList<>();
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -128,6 +139,9 @@ public class CameraFragment extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             mImageView.setImageBitmap(imageBitmap);
+            bitMapList.add(imageBitmap);
+            MyAdapter myAdapter  = new MyAdapter (getActivity(), bitMapList);
+            viewPager.setAdapter(myAdapter);
         }
     }
 
@@ -146,5 +160,6 @@ public class CameraFragment extends Fragment {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
 
 }

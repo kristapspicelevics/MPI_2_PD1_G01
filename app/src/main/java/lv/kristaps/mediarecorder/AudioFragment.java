@@ -1,11 +1,14 @@
 package lv.kristaps.mediarecorder;
 
 import android.Manifest;
+import android.content.ContentProvider;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
@@ -13,13 +16,17 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -85,6 +92,36 @@ public class AudioFragment extends Fragment {
         View audioView = inflater.inflate(R.layout.fragment_audio, container, false);
         Button start = audioView.findViewById(R.id.startRecord);
         Button stop = audioView.findViewById(R.id.stopRecord);
+        ListView mAudioListView = audioView.findViewById(R.id.audioListView);
+
+        ArrayList<String> mAudioList = new ArrayList<>();
+
+        //detail of each audio
+        String[] mAudioDetailArray = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME};
+
+        //INTERNAL_CONTENT_URI to display audio from internal storage
+        //EXTERNAL_CONTENT_URI to display audio from external storage
+        ContextWrapper contextWrapper = new ContextWrapper(getActivity().getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        try {
+            Cursor mAudioCursor = getActivity().getContentResolver().query(Uri.fromFile(musicDirectory), mAudioDetailArray, null, null, null);
+            if(mAudioCursor != null){
+                if(mAudioCursor.moveToFirst()){
+                    do{
+                        int audioIndex = mAudioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
+
+                        mAudioList.add(mAudioCursor.getString(audioIndex));
+                    }while(mAudioCursor.moveToNext());
+                }
+            }
+            mAudioCursor.close();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        ArrayAdapter<String> mAdapter = new ArrayAdapter<>(getActivity(),android.R.layout.simple_list_item_1,android.R.id.text1, mAudioList);
+        mAudioListView.setAdapter(mAdapter);
+
         if (isMicPresent()){
             getMicPermission();
         }
@@ -110,10 +147,15 @@ public class AudioFragment extends Fragment {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mediaRecorder.stop();
-                mediaRecorder.release();
-                mediaRecorder = null;
-                Toast.makeText(getActivity(), "End of recording", Toast.LENGTH_LONG).show();
+                try {
+                    mediaRecorder.stop();
+                    mediaRecorder.release();
+                    mediaRecorder = null;
+                    Toast.makeText(getActivity(), "End of recording", Toast.LENGTH_LONG).show();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
