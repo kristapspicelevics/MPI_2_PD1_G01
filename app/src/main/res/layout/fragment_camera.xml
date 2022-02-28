@@ -7,7 +7,7 @@
     tools:context=".CameraFragment">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -18,7 +18,7 @@
         tools:src="@tools:sample/avatars[4]" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/takePic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -29,6 +29,6 @@
         android:text="@string/take_pic_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.525"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/thumbnail"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

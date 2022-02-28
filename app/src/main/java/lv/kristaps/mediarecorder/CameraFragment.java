@@ -88,8 +88,8 @@ public class CameraFragment extends Fragment {
         // Inflate the layout for this fragment
         View cameraView = inflater.inflate(R.layout.fragment_camera, container, false);
 
-        Button button = cameraView.findViewById(R.id.button2);
-        mImageView = (ImageView) cameraView.findViewById(R.id.imageView2);
+        Button button = cameraView.findViewById(R.id.takePic);
+        mImageView = (ImageView) cameraView.findViewById(R.id.thumbnail);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

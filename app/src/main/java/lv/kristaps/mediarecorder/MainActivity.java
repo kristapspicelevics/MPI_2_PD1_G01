@@ -22,14 +22,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
-import java.io.File;
-import java.util.Random;
 
 import lv.kristaps.mediarecorder.ui.main.SectionsPagerAdapter;
 import lv.kristaps.mediarecorder.databinding.ActivityMainBinding;
@@ -39,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Context mContext;
-    private static int MICROPHONE_PERMISSION_CODE = 200;
-    MediaRecorder mediaRecorder;
-    MediaPlayer mediaPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        if (isMicPresent()){
-            getMicPermission();
-        }
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = binding.viewPager;
@@ -74,71 +63,10 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
-    public void btnRecordPressed(View v){
-        try {
-            mediaRecorder = new MediaRecorder();
-            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mediaRecorder.setOutputFile(getRecordingFilePath());
-            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mediaRecorder.prepare();
-            mediaRecorder.start();
 
-            Toast.makeText(this, "Recording starting", Toast.LENGTH_LONG).show();
-        }
-        catch (Exception e){
-            e.printStackTrace();
-        }
-
-
-    }
-    public  void btnStopPressed(View v){
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder = null;
-        Toast.makeText(this, "End of recording", Toast.LENGTH_LONG).show();
-    }
-//    public  void btnPlayPressed(View v){
-//
-//        try {
-//            Toast.makeText(this, "d", Toast.LENGTH_LONG).show();
-//            mediaPlayer = new MediaPlayer();
-//            mediaPlayer.setDataSource(getRecordingFilePath());
-//            mediaPlayer.prepare();
-//            mediaPlayer.start();
-//            Toast.makeText(this, "Playing recording", Toast.LENGTH_LONG).show();
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-    private boolean isMicPresent(){
-        if (this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE)){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-    private void getMicPermission (){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.RECORD_AUDIO},MICROPHONE_PERMISSION_CODE );
-        }
-    }
-    private String getRecordingFilePath(){
-
-        int num = new Random().nextInt(10000);
-        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
-        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory, "AudioFile"+ num + ".mp3");
-        return file.getPath();
-    }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        String titles[] = {"Camera",  "Audio"};
+        String titles[] = {getResources().getString(R.string.tab_text_1),  getResources().getString(R.string.tab_text_2)};
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
