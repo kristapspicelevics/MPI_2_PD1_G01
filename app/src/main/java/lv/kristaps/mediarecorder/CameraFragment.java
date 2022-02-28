@@ -51,9 +51,6 @@ public class CameraFragment extends Fragment {
     String mCurrentPhotoPath;
     ViewPager viewPager;
     ArrayList<Bitmap> bitMapList;
-    public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public String photoFileName = "photo.jpg";
-    public final String APP_TAG = "MyCustomApp";
 
     public CameraFragment() {
         // Required empty public constructor

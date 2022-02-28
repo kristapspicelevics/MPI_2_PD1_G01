@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -39,6 +40,7 @@ public class AudioFragment extends Fragment {
     private static int MICROPHONE_PERMISSION_CODE = 200;
     MediaRecorder mediaRecorder;
     MediaPlayer mediaPlayer;
+    ArrayList<String> mAudioList = new ArrayList<>();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,7 +96,7 @@ public class AudioFragment extends Fragment {
         Button stop = audioView.findViewById(R.id.stopRecord);
         ListView mAudioListView = audioView.findViewById(R.id.audioListView);
 
-        ArrayList<String> mAudioList = new ArrayList<>();
+
 
         //detail of each audio
         String[] mAudioDetailArray = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME};
@@ -105,6 +107,7 @@ public class AudioFragment extends Fragment {
         File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         try {
             Cursor mAudioCursor = getActivity().getContentResolver().query(Uri.fromFile(musicDirectory), mAudioDetailArray, null, null, null);
+        //    Cursor mAudioCursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.INTERNAL_CONTENT_URI, mAudioDetailArray, null, null, null);
             if(mAudioCursor != null){
                 if(mAudioCursor.moveToFirst()){
                     do{
@@ -158,25 +161,24 @@ public class AudioFragment extends Fragment {
                 }
             }
         });
-
+        mAudioListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                try{
+                    int index = position;
+                    String pathToFile = mAudioList.get(index);
+                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.setDataSource(pathToFile);
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
         return audioView;
     }
-
-//    public  void btnPlayPressed(View v){
-//
-//        try {
-//            Toast.makeText(this, "d", Toast.LENGTH_LONG).show();
-//            mediaPlayer = new MediaPlayer();
-//            mediaPlayer.setDataSource(getRecordingFilePath());
-//            mediaPlayer.prepare();
-//            mediaPlayer.start();
-//            Toast.makeText(this, "Playing recording", Toast.LENGTH_LONG).show();
-//        }
-//        catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//    }
 
     private boolean isMicPresent(){
         if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE)){
@@ -192,13 +194,13 @@ public class AudioFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.RECORD_AUDIO},MICROPHONE_PERMISSION_CODE );
         }
     }
-    private String getRecordingFilePath(){
 
-        int num = new Random().nextInt(10000);
-        ContextWrapper contextWrapper = new ContextWrapper(getActivity().getApplicationContext());
-        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        File file = new File(musicDirectory, "AudioFile"+ num + ".mp3");
-        return file.getPath();
-    }
+    private String getRecordingFilePath(){
+            int num = new Random().nextInt(10000);
+            ContextWrapper contextWrapper = new ContextWrapper(getActivity().getApplicationContext());
+            File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+            File file = new File(musicDirectory, "AudioFile"+ num + ".mp3");
+            return file.getPath();
+        }
 
 }

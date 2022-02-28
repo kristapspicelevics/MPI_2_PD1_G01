@@ -63,8 +63,6 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
-
-
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         String titles[] = {getResources().getString(R.string.tab_text_1),  getResources().getString(R.string.tab_text_2)};
         public SectionsPagerAdapter(FragmentManager fm) {
